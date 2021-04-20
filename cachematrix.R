@@ -1,15 +1,33 @@
-## Put comments here that give an overall description of what your
-## functions do
+## The first function in the file creates an R object that stores a matrix and its inverse. The second function requires an argument that is returned by the primer in order to retrieve the inverse from the cached value. 
 
-## Write a short comment describing this function
+## Creates an R object that stores a matrix and its inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-
+makeCacheMatrix <-  function(x = matrix()){
+                fs <- NULL
+                set <- function(y) {
+                        x <<- y
+                        fs <<- NULL
+                }
+                get <- function() x
+                setinverse <- function(mean) fs <<- inverse
+                getinverse <- function() fs
+                list(set = set, get = get,
+                     setinverse = setinverse,
+                     getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## Take the cached value that is stored in the makeCacheMatrix() environment
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+         fs <- x$getinverse()
+         if(!is.null(fs)) {
+              message("getting cached data")
+              return(fs)
+         }
+         data <- x$get()
+         fs <- solve(data, ...)
+         x$setinverse(fs)
+         fs
 }
+
